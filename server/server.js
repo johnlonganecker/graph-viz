@@ -1,10 +1,13 @@
 const http = require('http'),
   WebSocketServer = require('websocket').server,
   fs = require('fs'),
-  md5 = require('md5');
+  md5 = require('md5'),
+  process = require('process');
+
+const graphDataPath = process.env['DATA_PATH'] || '/home/node/app';
 
 const server = http.createServer();
-server.listen(9898);
+server.listen(6789);
 
 const wsServer = new WebSocketServer({
   httpServer: server
@@ -12,13 +15,12 @@ const wsServer = new WebSocketServer({
 
 wsServer.on('request', request => {
   const conn = request.accept(null, request.origin),
-    file = 'test.json';
+    file = process.env['DATA_PATH']+'/graph-data/test.json';
 
   let fsWait = false,
     previousMD5 = null;
 
-  console.log('asdf');
-
+  // https://thisdavej.com/how-to-watch-for-files-changes-in-node-js
   fs.watch(file, (event, filename) => {
     console.log('file modded');
     if(filename && event === 'change') {
@@ -41,7 +43,6 @@ wsServer.on('request', request => {
 
   conn.on('message', message => {
     console.log('Receive Message:', message.utf8Data);
-    //conn.sendUTF('Hi this is WebSocket server!');
   });
 
   conn.on('close', (reasonCode, description) => { 
@@ -49,3 +50,15 @@ wsServer.on('request', request => {
   });
 
 });
+
+http.createServer((req, res) => {
+  fs.readFile(__dirname + req.url, (err, data) => {
+    if(err) {
+      res.writeHead(400);
+      res.end(JSON.stringify(err));
+      return;
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+}).listen(7890);
