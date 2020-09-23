@@ -42,6 +42,8 @@ wsServer.on('request', request => {
   });
 
   conn.on('message', message => {
+    let fileContents = fs.readFileSync(file);
+    conn.sendUTF(fileContents);
     console.log('Receive Message:', message.utf8Data);
   });
 
