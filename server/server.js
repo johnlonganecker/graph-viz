@@ -15,7 +15,7 @@ const wsServer = new WebSocketServer({
 
 wsServer.on('request', request => {
   const conn = request.accept(null, request.origin),
-    file = process.env['DATA_PATH']+'/graph-data/test.json';
+    file = graphDataPath+'/graph-data/test.json';
 
   let fsWait = false,
     previousMD5 = null;
