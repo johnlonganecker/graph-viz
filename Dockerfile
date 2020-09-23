@@ -2,7 +2,7 @@ FROM node:14.11
 
 EXPOSE 6789
 
-RUN mkdir -p /home/node/app/graph
+RUN mkdir -p /home/node/app/graph-data
 
 COPY ./server/. /home/node/app/
 
