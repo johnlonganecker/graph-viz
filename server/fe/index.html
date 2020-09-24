@@ -26,7 +26,9 @@
   <body>
   </body>
   <script>
-    const ws = new WebSocket('ws://localhost:6789/');
+    const ws = new WebSocket('ws://localhost:6789/'),
+      graphs = [];
+    let graphIdx = 0;
 
     ws.onopen = () => {
       console.log('WebSocket Client Connected');
@@ -34,8 +36,21 @@
     };
 
     ws.onmessage = e => {
-      console.log(e.data);
-      drawGraph(JSON.parse(e.data));
+      let graphData = JSON.parse(e.data);
+
+      graphs.push(graphData);
+      graphIdx = graphs.length-1;
+      drawGraph(graphs[graphIdx]);
+    }
+
+    function previousGraph() {
+      graphIdx--;
+      drawGraph(graphs[graphIdx]);
+    }
+
+    function nextGraph() {
+      graphIdx++;
+      drawGraph(graphs[graphIdx]);
     }
 
     function drawGraph(treeData) {
