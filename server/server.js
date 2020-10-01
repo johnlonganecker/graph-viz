@@ -13,41 +13,41 @@ const wsServer = new WebSocketServer({
   httpServer: server
 });
 
-function watchFile(filename) {
-  return new Promise((success, fail) => {
-    let fsWait = false,
-      previousMD5 = null;
+function watchFile(filename, wsConn) {
+  console.log(`attempting to watch ${filename}`);
 
-    // https://thisdavej.com/how-to-watch-for-files-changes-in-node-js
-    fs.watch(file, (event, filename) => {
-      console.log('file modded');
-      if(filename && event === 'change') {
-        if(fsWait) return;
+  let fsWait = false,
+    previousMD5 = null;
 
-        fsWait = setTimeout(() => {
-          fsWait = false;
-        }, 100);
+  console.log(`now watching ${filename}`);
+  // https://thisdavej.com/how-to-watch-for-files-changes-in-node-js
+  fs.watch(filename, (event, file) => {
+    console.log('file modded');
+    if(file && event === 'change') {
+      if(fsWait) return;
 
-        let fileContents = fs.readFileSync(file),
-          currentMD5 = md5(fileContents);
+      fsWait = setTimeout(() => {
+        fsWait = false;
+      }, 100);
 
-        if(currentMD5 !== previousMD5) {
-          console.log(`${filename} file changed`);
-          success(fileContents);
-          previousMD5 = currentMD5;
-        }
+      let fileContents = fs.readFileSync(filename),
+        currentMD5 = md5(fileContents);
+
+      if(currentMD5 !== previousMD5) {
+        console.log(`${filename} file changed`);
+        wsConn.sendUTF(fileContents);
+        previousMD5 = currentMD5;
       }
-    });
+    }
   });
+
 }
 
 wsServer.on('request', request => {
   const conn = request.accept(null, request.origin),
     file = graphDataPath+'/graph-data/test.json';
 
-    watchFile(file).then(fileContents => {
-      conn.sendUTF(fileContents);
-    }).catch(() => {});
+  watchFile(file, conn);
 
   conn.on('message', message => {
     let fileContents = fs.readFileSync(file);
