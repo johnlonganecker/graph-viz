@@ -1,28 +1,57 @@
 {
-  "name": "Top Level",
-  "children": [
-    { 
-      "name": "Level 2: A",
+  "version": "1.0.0",
+  "graph": {
+    "value": 1200,
+    "traversed": true,
+    "children": [
+      {
+        "value": 190,
         "children": [
-          { "name": "Son of A" },
-          { "name": "Daughter of A" }
+          {
+            "value": 10,
+            "children": []
+          },
+          {
+            "value": 1100,
+            "children": []
+          }
         ]
-    },
-    {
-      "name": "Level 2: A",
-      "children": [
-        { "name": "Son of A" },
-        { 
-          "name": "Daughter of A",
-          "children": [
-            { "name": "cool"},
-            { "name": "cool"},
-            { "name": "cool"},
-            { "name": "cool"},
-            { "name": "coolss"}
-          ]
-        }
-      ]
-    }
-  ]
+      },
+      {
+        "value": 1400,
+        "traversed": true,
+        "children": [
+          {
+            "value": 1300,
+            "traversed": true,
+            "current": true,
+            "currentValue": 1375,
+            "children": [
+              {
+                "value": 1250,
+                "children": []
+              },
+              {
+                "value": 1350,
+                "children": []
+              }
+            ]
+          },
+          {
+            "value": 1500,
+            "children": [
+              {
+                "value": null,
+                "children": []
+              },
+              {
+                "value": 1600,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
